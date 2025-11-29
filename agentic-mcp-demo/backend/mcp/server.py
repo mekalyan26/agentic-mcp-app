@@ -1,6 +1,8 @@
 """MCP Server implementation for handling tool requests."""
 
+import ast
 import json
+import operator
 import os
 
 
@@ -191,12 +193,49 @@ class MCPServer:
         """
         expression = params.get("expression", "0")
         try:
-            # Note: eval is used here for demo purposes only
-            # In production, use a safe expression parser
-            result = eval(str(expression))
+            result = self._safe_eval(str(expression))
             return {"success": True, "data": {"expression": expression, "result": result}}
-        except (SyntaxError, NameError, TypeError, ZeroDivisionError) as e:
+        except (SyntaxError, TypeError, ValueError) as e:
             return {"success": False, "error": f"Calculation error: {e!s}"}
+
+    def _safe_eval(self, expression):
+        """Safely evaluate a mathematical expression using AST.
+
+        Args:
+            expression: Mathematical expression string.
+
+        Returns:
+            Result of the calculation.
+
+        Raises:
+            ValueError: If the expression contains unsupported operations.
+        """
+        # Define allowed operators
+        operators_map = {
+            ast.Add: operator.add,
+            ast.Sub: operator.sub,
+            ast.Mult: operator.mul,
+            ast.Div: operator.truediv,
+            ast.Pow: operator.pow,
+            ast.USub: operator.neg,
+            ast.UAdd: operator.pos,
+        }
+
+        def _eval(node):
+            if isinstance(node, ast.Constant):
+                return node.value
+            elif isinstance(node, ast.BinOp):
+                left = _eval(node.left)
+                right = _eval(node.right)
+                return operators_map[type(node.op)](left, right)
+            elif isinstance(node, ast.UnaryOp):
+                operand = _eval(node.operand)
+                return operators_map[type(node.op)](operand)
+            else:
+                raise ValueError(f"Unsupported operation: {type(node)}")
+
+        tree = ast.parse(expression, mode='eval')
+        return _eval(tree.body)
 
     def _handle_default(self, params, responses):
         """Handle default tool execution.

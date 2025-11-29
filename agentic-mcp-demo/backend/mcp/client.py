@@ -1,6 +1,8 @@
 """MCP Client implementation for communicating with MCP servers."""
 
+import ast
 import json
+import operator
 
 
 class MCPClient:
@@ -66,12 +68,55 @@ class MCPClient:
         Returns:
             Simulated result based on tool type.
         """
+        calc_result = 0
+        if params.get("expression"):
+            calc_result = self._safe_eval(str(params.get("expression")))
+        
         simulated_results = {
             "get_weather": {"temperature": 72, "condition": "sunny", "location": params.get("location", "Unknown")},
             "search": {"results": ["Result 1", "Result 2", "Result 3"], "query": params.get("query", "")},
-            "calculator": {"result": eval(str(params.get("expression", "0"))) if params.get("expression") else 0},
+            "calculator": {"result": calc_result},
         }
         return simulated_results.get(tool_name, {"message": f"Tool '{tool_name}' executed successfully"})
+
+    def _safe_eval(self, expression):
+        """Safely evaluate a mathematical expression.
+
+        Args:
+            expression: Mathematical expression string.
+
+        Returns:
+            Result of the calculation or 0 if invalid.
+        """
+        # Define allowed operators
+        operators = {
+            ast.Add: operator.add,
+            ast.Sub: operator.sub,
+            ast.Mult: operator.mul,
+            ast.Div: operator.truediv,
+            ast.Pow: operator.pow,
+            ast.USub: operator.neg,
+            ast.UAdd: operator.pos,
+        }
+
+        def _eval(node):
+            if isinstance(node, ast.Constant):
+                return node.value
+            elif isinstance(node, ast.BinOp):
+                left = _eval(node.left)
+                right = _eval(node.right)
+                return operators[type(node.op)](left, right)
+            elif isinstance(node, ast.UnaryOp):
+                operand = _eval(node.operand)
+                return operators[type(node.op)](operand)
+            else:
+                raise ValueError(f"Unsupported operation: {type(node)}")
+
+        try:
+            tree = ast.parse(expression, mode='eval')
+            return _eval(tree.body)
+        except (ValueError, KeyError, SyntaxError, TypeError):
+            return 0
 
     def list_tools(self):
         """Get list of available tools from the server.
