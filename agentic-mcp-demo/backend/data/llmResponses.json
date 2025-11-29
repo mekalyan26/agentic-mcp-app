@@ -1,0 +1,40 @@
+{
+  "default": {
+    "response": "I understand. How can I assist you further?",
+    "requires_tool": false
+  },
+  "patterns": {
+    "weather|forecast|temperature": {
+      "response": "Let me check the weather for you.",
+      "requires_tool": true,
+      "tool_name": "get_weather",
+      "tool_params": {
+        "location": "auto"
+      }
+    },
+    "search|find|look up|lookup": {
+      "response": "I'll search for that information.",
+      "requires_tool": true,
+      "tool_name": "search",
+      "tool_params": {}
+    },
+    "calculate|compute|math|sum|add|subtract|multiply|divide": {
+      "response": "Let me calculate that for you.",
+      "requires_tool": true,
+      "tool_name": "calculator",
+      "tool_params": {}
+    },
+    "hello|hi|hey|greetings": {
+      "response": "Hello! I'm an AI assistant powered by MCP. How can I help you today?",
+      "requires_tool": false
+    },
+    "help|assist|support": {
+      "response": "I can help you with various tasks including weather lookups, searching for information, and performing calculations. Just ask!",
+      "requires_tool": false
+    },
+    "thanks|thank you|thx": {
+      "response": "You're welcome! Let me know if you need anything else.",
+      "requires_tool": false
+    }
+  }
+}
