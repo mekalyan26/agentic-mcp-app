@@ -1,0 +1,49 @@
+{
+  "tools": {
+    "get_weather": {
+      "default": {
+        "temperature": 72,
+        "condition": "sunny",
+        "humidity": 45
+      },
+      "locations": {
+        "new york": {
+          "temperature": 65,
+          "condition": "cloudy",
+          "humidity": 60
+        },
+        "los angeles": {
+          "temperature": 78,
+          "condition": "sunny",
+          "humidity": 35
+        },
+        "london": {
+          "temperature": 55,
+          "condition": "rainy",
+          "humidity": 80
+        }
+      }
+    },
+    "search": {
+      "default": {
+        "results": [
+          "Sample result 1",
+          "Sample result 2",
+          "Sample result 3"
+        ]
+      }
+    },
+    "calculator": {
+      "description": "Evaluates mathematical expressions"
+    }
+  },
+  "server": {
+    "name": "Agentic MCP Demo Server",
+    "version": "1.0.0",
+    "capabilities": {
+      "tools": true,
+      "prompts": true,
+      "resources": false
+    }
+  }
+}

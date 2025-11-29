@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic MCP Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 Agentic MCP Demo</h1>
+            <p class="subtitle">Model Context Protocol Integration Demo</p>
+        </header>
+
+        <main>
+            <section class="chat-container">
+                <div id="chat-messages" class="messages">
+                    <div class="message system">
+                        <p>Welcome! I'm an AI assistant powered by MCP. Try asking about the weather, searching for information, or performing calculations.</p>
+                    </div>
+                </div>
+
+                <form id="chat-form" class="input-form">
+                    <input 
+                        type="text" 
+                        id="user-input" 
+                        placeholder="Type your message here..." 
+                        autocomplete="off"
+                        required
+                    >
+                    <button type="submit" id="send-btn">Send</button>
+                </form>
+            </section>
+
+            <aside class="tools-panel">
+                <h2>Available Tools</h2>
+                <div id="tools-list" class="tools-list">
+                    <!-- Tools will be loaded dynamically -->
+                </div>
+                <button id="refresh-tools" class="refresh-btn">Refresh Tools</button>
+            </aside>
+        </main>
+
+        <footer>
+            <p>Powered by Model Context Protocol (MCP)</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
